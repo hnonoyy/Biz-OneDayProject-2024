@@ -1,0 +1,39 @@
+@charset "UTF-8";
+
+section.memo.input {
+  form {
+    width: 50%;
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 30px;
+    margin: 30px;
+
+    input {
+      padding: 20px;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      width: 300px;
+    }
+    textarea {
+      width: 300px;
+      height: 300px;
+      font-size: 12px;
+      padding: 20px;
+      resize: none;
+      color: black;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      outline: none;
+    }
+    button {
+      border-radius: 10px;
+      background-color: #469bd4;
+      color: white;
+      width: 300px;
+      padding: 10px;
+      border: none;
+    }
+  }
+}
