@@ -20,7 +20,8 @@ public class MemoServiceImplV1 implements MemoService {
 
 	@Override
 	public List<MemoVO> selectAll() {
-		return null;
+		List<MemoVO> memoList = memoDao.selectAll();
+		return memoList;
 	}
 
 	@Override

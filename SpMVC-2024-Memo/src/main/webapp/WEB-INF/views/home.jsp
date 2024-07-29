@@ -10,6 +10,7 @@
 <body>
 	<tiles:insertAttribute name="header" />
 	<tiles:insertAttribute name="content" />
+	<tiles:insertAttribute name="input" />
 </body>
 	<tiles:insertAttribute name="footer"/>
 </html>

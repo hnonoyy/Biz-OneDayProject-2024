@@ -1,8 +1,11 @@
 package com.callor.memo.controller;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,52 +14,58 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.callor.memo.models.MemoVO;
 import com.callor.memo.persistence.MemoDao;
+import com.callor.memo.service.MemoService;
 
 @Controller
 public class HomeController {
 
 	private final MemoDao memoDao;
+	private final MemoService memoService;
+	
 
-	public HomeController(MemoDao memoDao) {
+	public HomeController(MemoDao memoDao, MemoService memoService) {
 		super();
 		this.memoDao = memoDao;
+		this.memoService = memoService;
 	}
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(LocalDateTime localdate, Model model) {
-		List<MemoVO> memoList = memoDao.selectAll();
-		
-		LocalDateTime currentDate = LocalDateTime.now();
-		String nowDate = currentDate.format(DateTimeFormatter.ofPattern("YYYY-MM-dd"));
-		String hour = String.valueOf(currentDate.getHour());
-		String minute = String.valueOf(currentDate.getMinute());
-		String second = String.valueOf(currentDate.getSecond());
-		String auth = "hnono0210@gmail.com";
-		
-		String time = hour +":"+minute+":"+second;
-		model.addAttribute("m_date", nowDate);
-		model.addAttribute("m_time", time);
-		model.addAttribute("m_author",auth);
-
-		model.addAttribute("MEMO_LIST", memoList);
+	public String home(HttpSession httpSession) {
+		List<MemoVO> memoList = memoService.selectAll();
+		httpSession.setAttribute("MEMOLIST", memoList);
 		return "home";
-
 	}	
 	
 	@RequestMapping(value = "/", method = RequestMethod.POST)
-	public String home(Model model) {
+	public String insert(MemoVO memoVO) {
+		memoVO.setM_author("hnono0210@gmail.com");
+		LocalDateTime currentDate = LocalDateTime.now();
+		String nowDate = currentDate.format(DateTimeFormatter.ofPattern("YYYY-MM-dd"));
+
+		LocalTime nTime = LocalTime.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+		String nowTime = nTime.format(formatter);
 		
-		return "memo/input";
+		memoVO.setM_date(nowDate);
+		memoVO.setM_time(nowTime);
+
+		return "redirect:/";
 	}
-	@RequestMapping(value = "/insert", method = RequestMethod.GET)
-	public String insert() {
+	
+	
+	@RequestMapping(value = "/update", method = RequestMethod.GET)
+	public String update(int m_seq, Model model) {
+		MemoVO memoVO = memoDao.findBySeq(m_seq);
+		model.addAttribute("MEMO" ,memoVO);
 		return "memo/input";
 	}
 	
-	@RequestMapping(value = "/insert", method = RequestMethod.POST)
-	public String insert(MemoVO memoVo, Model model) {
-		model.addAttribute("memoVO", memoVo);
-		int result = memoDao.insert(memoVo);
+	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	public String update(MemoVO memoVO, HttpSession httpSession) {
+		
+		int result = memoDao.update(memoVO);
+				
 		return "redirect:/";
 	}
+	
 }
